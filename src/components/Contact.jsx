@@ -1,166 +1,254 @@
-// Contact section — white background with EmailJS form
-import { useState } from 'react'
-import emailjs from '@emailjs/browser'
-import { personalInfo, socialLinks, emailjsConfig } from '../data/portfolioData'
+import { useRef, useState } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import {
+  emailjsConfig,
+  personalInfo,
+  socialLinks,
+} from '../data/portfolioData'
 
 function Contact() {
-  // Form field values
-  const [form, setForm] = useState({ name: '', email: '', message: '' })
-  // idle | sending | success | error
-  const [status, setStatus] = useState('idle')
+  const sectionRef = useRef(null)
+  const formRef = useRef(null)
+  const [status, setStatus] = useState('idle') // 'idle' | 'sending' | 'success' | 'error'
 
-  const handleChange = e => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
-  }
+  // Background parallax movement
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  })
+  const y = useTransform(scrollYProgress, [0, 1], ['-20%', '30%'])
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    if (status === 'sending') return
+
     setStatus('sending')
-    try {
-      await emailjs.send(
-        emailjsConfig.serviceId,
-        emailjsConfig.templateId,
-        {
-          from_name: form.name,
-          from_email: form.email,
-          message: form.message,
-          to_email: personalInfo.emails.primary,
-        },
-        emailjsConfig.publicKey
+
+    const form = formRef.current
+    if (!form) return
+
+    const firstName = form.querySelector('#firstName')?.value?.trim() || ''
+    const lastName = form.querySelector('#lastName')?.value?.trim() || ''
+    const email = form.querySelector('#email')?.value?.trim() || ''
+    const message = form.querySelector('#message')?.value?.trim() || ''
+
+    // Basic client validation
+    if (!firstName || !email || !message) {
+      setStatus('error')
+      setTimeout(() => setStatus('idle'), 3000)
+      return
+    }
+
+    const { serviceId, templateId, publicKey } = emailjsConfig
+    const isConfigured =
+      Boolean(serviceId && templateId && publicKey) &&
+      serviceId !== 'YOUR_EMAILJS_SERVICE_ID' &&
+      templateId !== 'YOUR_EMAILJS_TEMPLATE_ID' &&
+      publicKey !== 'YOUR_EMAILJS_PUBLIC_KEY'
+
+    if (!isConfigured) {
+      // Fallback: trigger native email client
+      const subject = encodeURIComponent(
+        `Portfolio Contact from ${firstName} ${lastName}`.trim()
+      )
+      const body = encodeURIComponent(
+        `From: ${firstName} ${lastName}\nEmail: ${email}\n\n${message}`
+      )
+      window.open(
+        `mailto:${personalInfo.emails.primary}?subject=${subject}&body=${body}`,
+        '_blank'
       )
       setStatus('success')
-      setForm({ name: '', email: '', message: '' })
-    } catch {
+      form.reset()
+      setTimeout(() => setStatus('idle'), 3000)
+      return
+    }
+
+    try {
+      const emailjs = await import('@emailjs/browser')
+      await emailjs.sendForm(serviceId, templateId, form, publicKey)
+      setStatus('success')
+      form.reset()
+    } catch (err) {
+      console.error('EmailJS error:', err)
       setStatus('error')
     }
+
+    setTimeout(() => setStatus('idle'), 4000)
   }
 
   return (
-    <section id="contact" className="py-24 bg-white text-black">
-      <div className="max-w-6xl mx-auto px-6">
+    <section
+      ref={sectionRef}
+      id="contact"
+      className="bg-[#0a0a0a] w-full min-h-screen relative overflow-hidden flex items-end pt-32 border-t border-gray-900"
+    >
+      {/* Background Parallax "Contact" Word */}
+      <motion.div
+        style={{ y }}
+        className="absolute inset-x-0 top-1/4 pointer-events-none z-0 flex justify-center"
+      >
+        <div
+          className="text-[25vw] leading-[0.75] font-black uppercase tracking-tighter select-none scale-y-[1.6] origin-top text-white/[0.04]"
+          style={{ fontFamily: "'Impact','Arial Black',sans-serif" }}
+        >
+          Contact
+        </div>
+      </motion.div>
 
-        {/* Section label + heading */}
-        <div className="text-center mb-16" data-aos="fade-up">
-          <p className="text-[#ff2a2a] text-xs font-bold tracking-[0.25em] uppercase mb-3">
-            Get In Touch
-          </p>
-          <h2 className="text-4xl md:text-5xl font-black text-black">
-            Contact Me
-          </h2>
-          <p className="text-gray-500 mt-4 max-w-md mx-auto text-base">
-            Open to entry-level Data Analyst opportunities — let's connect!
-          </p>
+      {/* Front Aligned Red Card */}
+      <div
+        data-aos="fade-up"
+        className="bg-[#ff2a2a] w-full md:w-[85%] lg:w-[75%] p-8 md:p-16 ml-auto rounded-tl-3xl relative z-10 shadow-2xl"
+      >
+        {/* Header Row */}
+        <div className="flex items-center justify-between pb-8 border-b border-white/20 mb-10">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/80">
+            Reach Me
+          </span>
+          {socialLinks.instagram && (
+            <a
+              href={socialLinks.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-1.5 rounded-full bg-white/20 border border-white/30 text-white text-xs font-semibold hover:bg-white hover:text-black transition-all duration-200"
+            >
+              DM on Instagram
+            </a>
+          )}
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-
-          {/* Contact info column */}
-          <div data-aos="fade-right">
-            <h3 className="text-xl font-black mb-6">Let's Talk</h3>
-            <div className="flex flex-col gap-4">
-              <a
-                href={`mailto:${personalInfo.emails.primary}`}
-                className="flex items-center gap-3 text-gray-600 hover:text-[#ff2a2a] transition-colors"
-              >
-                <span className="text-xl">✉️</span>
-                <span className="text-sm font-medium">{personalInfo.emails.primary}</span>
-              </a>
-              <p className="flex items-center gap-3 text-gray-600">
-                <span className="text-xl">📍</span>
-                <span className="text-sm font-medium">{personalInfo.location}</span>
-              </p>
-              {personalInfo.phone && (
-                <a
-                  href={`tel:${personalInfo.phone.replace(/\s/g, '')}`}
-                  className="flex items-center gap-3 text-gray-600 hover:text-[#ff2a2a] transition-colors"
-                >
-                  <span className="text-xl">📞</span>
-                  <span className="text-sm font-medium">{personalInfo.phone}</span>
-                </a>
-              )}
+        {/* Contact Form */}
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-10"
+        >
+          <div className="flex flex-col md:flex-row gap-8 md:gap-12">
+            {/* Left Column: Underline Inputs */}
+            <div className="flex-1 flex flex-col gap-8">
+              <input
+                id="firstName"
+                name="first_name"
+                type="text"
+                required
+                placeholder="First Name *"
+                className="bg-transparent border-b border-white/40 pb-3 text-lg placeholder-white/80 text-white focus:outline-none focus:border-white transition-colors"
+              />
+              <input
+                id="lastName"
+                name="last_name"
+                type="text"
+                placeholder="Last Name"
+                className="bg-transparent border-b border-white/40 pb-3 text-lg placeholder-white/80 text-white focus:outline-none focus:border-white transition-colors"
+              />
+              <input
+                id="email"
+                name="user_email"
+                type="email"
+                required
+                placeholder="Email Address *"
+                className="bg-transparent border-b border-white/40 pb-3 text-lg placeholder-white/80 text-white focus:outline-none focus:border-white transition-colors"
+              />
             </div>
 
-            {/* Social buttons */}
-            <div className="flex flex-wrap gap-3 mt-8">
-              {socialLinks.github && (
-                <a
-                  href={socialLinks.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-2.5 bg-black text-white text-sm font-semibold rounded-full hover:bg-[#ff2a2a] transition-colors duration-200"
-                >
-                  GitHub
-                </a>
-              )}
-              {socialLinks.linkedin && (
-                <a
-                  href={socialLinks.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-2.5 border-2 border-black text-black text-sm font-semibold rounded-full hover:border-[#ff2a2a] hover:text-[#ff2a2a] transition-colors duration-200"
-                >
-                  LinkedIn
-                </a>
-              )}
+            {/* Right Column: Underline Textarea */}
+            <div className="flex-1 flex flex-col">
+              <textarea
+                id="message"
+                name="message"
+                required
+                placeholder="Your Message *"
+                className="bg-transparent border-b border-white/40 pb-3 text-lg placeholder-white/80 text-white focus:outline-none focus:border-white transition-colors resize-none min-h-[140px] h-full"
+              />
             </div>
           </div>
 
-          {/* Contact form */}
-          <form
-            data-aos="fade-left"
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-4"
-          >
-            <input
-              type="text"
-              name="name"
-              placeholder="Your Name"
-              required
-              value={form.name}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-black transition-colors"
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Your Email"
-              required
-              value={form.email}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-black transition-colors"
-            />
-            <textarea
-              name="message"
-              placeholder="Your Message"
-              required
-              rows={5}
-              value={form.message}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:border-black transition-colors resize-none"
-            />
+          {/* Bottom Area: Checkbox, Note, and Submit Pill */}
+          <div className="flex flex-col gap-6 pt-4 border-t border-white/10">
+            {/* Permission Checkbox */}
+            <label className="flex items-start gap-3 cursor-pointer text-xs text-white/80 select-none">
+              <input
+                type="checkbox"
+                required
+                className="mt-0.5 rounded border-white/40 text-black focus:ring-0"
+              />
+              <span>
+                I agree that my submitted information will be used to respond to
+                my inquiry.
+              </span>
+            </label>
 
-            <button
-              type="submit"
-              disabled={status === 'sending'}
-              className="px-8 py-3 bg-black text-white font-bold rounded-full hover:bg-[#ff2a2a] disabled:opacity-50 active:scale-95 transition-all duration-200"
-            >
-              {status === 'sending' ? 'Sending…' : 'Send Message'}
-            </button>
-
-            {/* Status feedback */}
-            {status === 'success' && (
-              <p className="text-green-600 text-sm font-medium text-center">
-                ✅ Message sent! I'll get back to you soon.
+            {/* Guarantee Note & Urgent Direct Link */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-white/70">
+              <p className="italic">
+                Your message will be sent directly to my inbox. I typically
+                respond within 24-48 hours.
               </p>
-            )}
-            {status === 'error' && (
-              <p className="text-red-600 text-sm font-medium text-center">
-                ❌ Something went wrong. Please email me directly.
+              <p>
+                Urgent?{' '}
+                <a
+                  href={`mailto:${personalInfo.emails.primary}`}
+                  className="underline hover:text-white font-medium"
+                >
+                  Email me directly
+                </a>
               </p>
-            )}
-          </form>
+            </div>
 
-        </div>
+            {/* Submit Button */}
+            <div className="flex justify-end pt-2">
+              <button
+                type="submit"
+                disabled={status === 'sending'}
+                className={`rounded-full px-8 py-3.5 border text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer ${
+                  status === 'sending'
+                    ? 'bg-white/30 border-white/30 text-white/70 cursor-wait'
+                    : status === 'success'
+                    ? 'bg-emerald-600 border-emerald-500 text-white'
+                    : status === 'error'
+                    ? 'bg-red-950 border-red-800 text-white'
+                    : 'bg-transparent border-white text-white hover:bg-white hover:text-[#ff2a2a]'
+                }`}
+              >
+                {status === 'sending' && (
+                  <>
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    <span>Sending...</span>
+                  </>
+                )}
+                {status === 'success' && <span>Sent Successfully ✓</span>}
+                {status === 'error' && <span>Failed — Try Again</span>}
+                {status === 'idle' && (
+                  <>
+                    <span>Send Message</span>
+                    <span className="group-hover:translate-x-1.5 transition-transform duration-200">
+                      →
+                    </span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </section>
   )
