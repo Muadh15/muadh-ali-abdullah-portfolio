@@ -1,35 +1,48 @@
-# My Portfolio
+# Muadh Ali Abdullah — Portfolio
 
-A single-page developer portfolio built with React 19 + Vite + Tailwind CSS 4.
+A modern, responsive developer portfolio showcasing data analytics and full-stack software development projects.
 
 Built during the placement training program at [TAP Academy](https://thetapacademy.com/) (full-stack development, AI and augmented reality training).
 
+## Live Site
+
+- **Live URL:** [https://YOUR-SITE-URL/](https://YOUR-SITE-URL/)
+
 ## Tech Stack
 
-- **React 19** + **Vite** — fast development and builds
-- **Tailwind CSS 4** — utility-first styling via the `@tailwindcss/vite` plugin
-- **Framer Motion** — smooth animations
-- **AOS** — scroll-reveal animations
-- **EmailJS** — contact form without a backend
+- **React 19** & **Vite** — High-performance reactive frontend tooling
+- **Tailwind CSS 4** — Utility-first styling via `@tailwindcss/vite`
+- **Framer Motion** — Fluid spring physics, water-fill preloader, and scroll progress animations
+- **AOS** — Smooth scroll-triggered section reveals
+- **EmailJS** — Client-side direct email dispatch with error-recovery fallback
+- **WebGL** — Interactive fluid splash cursor physics simulation
+
+## Environment Variables
+
+Create a `.env.local` file in the project root with your EmailJS credentials:
+
+```bash
+VITE_EMAILJS_SERVICE_ID=
+VITE_EMAILJS_TEMPLATE_ID=
+VITE_EMAILJS_PUBLIC_KEY=
+```
+
+## Run Locally
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Start development server
+npm run dev
+
+# 3. Create production build
+npm run build
+
+# 4. Preview production build
+npm run preview
+```
 
 ## GitHub Topics
 
 `tap-academy` · `tap-academy-student` · `placement-training` · `augmented-reality`
-
-## Getting Started
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173) in your browser.
-
-## Scripts
-
-| Command | Description |
-|---|---|
-| `npm run dev` | Start dev server |
-| `npm run build` | Production build |
-| `npm run lint` | Run linter |
-| `npm run preview` | Preview production build |

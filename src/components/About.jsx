@@ -72,7 +72,7 @@ function About() {
                 {/* Photo inside */}
                 <img
                   src={stackImage}
-                  alt={personalInfo.name}
+                  alt="Muadh Ali Abdullah — Data Analyst, TAP Academy student"
                   className="aspect-[3/4] w-full rounded-xl object-cover object-top shadow-inner flex-1"
                 />
               </div>
