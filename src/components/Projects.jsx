@@ -1,93 +1,160 @@
-// Projects showcase — dark section with 3 project cards
-import { projects } from '../data/portfolioData'
+import { projects, socialLinks } from '../data/portfolioData'
+
+// Inline SVG GitHub Icon
+function GitHubIcon({ className = 'w-4 h-4' }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+    </svg>
+  )
+}
+
+// Inline SVG External Link Icon
+function ExternalLinkIcon({ className = 'w-4 h-4' }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+      />
+    </svg>
+  )
+}
+
+// Card for individual project with gradient border and rich metadata
+function ProjectCard({ project, aosDelay }) {
+  return (
+    <div
+      data-aos="fade-up"
+      data-aos-delay={aosDelay}
+      className={`p-[1px] rounded-2xl transition-all duration-300 ${
+        project.isFlagship
+          ? 'bg-gradient-to-br from-red-500/50 via-white/10 to-red-500/30 hover:from-red-500/70 hover:via-white/20 hover:to-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.15)]'
+          : 'bg-white/10 hover:bg-white/20'
+      }`}
+    >
+      <div className="rounded-2xl p-6 md:p-8 backdrop-blur-md bg-[#0f0f0f]/90 md:bg-[#111111]/90 flex flex-col justify-between h-full">
+        <div>
+          {/* Optional Flagship badge */}
+          {project.badge && (
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-red-500/10 text-[#ff2a2a] text-xs font-bold tracking-widest uppercase mb-4 border border-red-500/20">
+              {project.badge}
+            </span>
+          )}
+
+          {/* Number and Title */}
+          <div className="flex items-baseline gap-4 mb-3">
+            <span className="text-4xl md:text-5xl font-black italic font-serif text-white/15 select-none leading-none">
+              {project.number}
+            </span>
+            <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+              {project.title}
+            </h3>
+          </div>
+
+          {/* Description */}
+          <p className="text-white/60 text-sm md:text-base leading-relaxed mb-6">
+            {project.description}
+          </p>
+
+          {/* Tech tag pills */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            {project.techTags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full text-xs font-bold px-3 py-1 bg-white/5 border border-white/10 text-white/70 hover:border-red-500/40 hover:text-[#ff2a2a] hover:bg-red-500/10 transition-colors duration-200 cursor-default select-none"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-white/5">
+          {project.links?.github && (
+            <a
+              href={project.links.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 rounded-full bg-white/5 border border-white/15 text-white text-xs font-bold flex items-center gap-2 hover:bg-white/15 hover:border-white/30 transition-all duration-200"
+            >
+              <GitHubIcon className="w-3.5 h-3.5" />
+              <span>GitHub</span>
+            </a>
+          )}
+
+          {project.links?.demo ? (
+            <a
+              href={project.links.demo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 rounded-full bg-[#ff2a2a] text-white text-xs font-bold flex items-center gap-2 hover:bg-red-600 active:scale-95 transition-all duration-200 shadow-md shadow-red-500/20"
+            >
+              <ExternalLinkIcon className="w-3.5 h-3.5" />
+              <span>Live Demo</span>
+            </a>
+          ) : (
+            <span className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/30 text-xs font-medium cursor-not-allowed flex items-center gap-2 select-none">
+              Demo Coming Soon
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function Projects() {
   return (
-    <section id="projects" className="py-24 bg-[#0a0a0a]">
-      <div className="max-w-6xl mx-auto px-6">
-
-        {/* Section label + heading */}
-        <div className="text-center mb-16" data-aos="fade-up">
-          <p className="text-[#ff2a2a] text-xs font-bold tracking-[0.25em] uppercase mb-3">
-            My Work
-          </p>
-          <h2 className="text-4xl md:text-5xl font-black text-white">
+    <section
+      id="projects"
+      className="bg-[#0a0a0a] bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:80px_80px] pt-24 pb-32 px-6 md:px-12 relative overflow-hidden"
+    >
+      <div className="max-w-6xl mx-auto relative z-10">
+        {/* Header section */}
+        <div data-aos="fade-up" className="text-center mb-16">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#ff2a2a] text-xs font-bold tracking-widest uppercase mb-4">
             Featured Projects
+          </span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight mb-4">
+            Work that speaks for itself
           </h2>
+          <p className="text-sm md:text-base text-white/50 max-w-xl mx-auto leading-relaxed">
+            Real-world web applications and analytics projects designed and built to solve practical challenges.
+          </p>
         </div>
 
-        {/* Project cards grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project, i) => (
-            <div
+        {/* Stacked project cards */}
+        <div className="flex flex-col gap-6 md:gap-8 mb-16">
+          {projects.map((project, index) => (
+            <ProjectCard
               key={project.id}
-              data-aos="fade-up"
-              data-aos-delay={i * 100}
-              className={`flex flex-col bg-white/5 border rounded-2xl p-6 hover:border-[#ff2a2a]/60 transition-all duration-300 ${
-                project.isFlagship ? 'border-[#ff2a2a]/40' : 'border-white/10'
-              }`}
-            >
-              {/* Flagship badge */}
-              {project.badge && (
-                <span className="text-xs font-bold text-[#ff2a2a] mb-3 tracking-wide">
-                  {project.badge}
-                </span>
-              )}
-
-              {/* Number + Title */}
-              <p className="text-white/15 text-5xl font-black leading-none mb-2 select-none">
-                {project.number}
-              </p>
-              <h3 className="text-xl font-black text-white mb-3">
-                {project.title}
-              </h3>
-
-              {/* Description */}
-              <p className="text-white/60 text-sm leading-relaxed mb-5 flex-grow">
-                {project.description}
-              </p>
-
-              {/* Tech tags */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                {project.techTags.map(tag => (
-                  <span
-                    key={tag}
-                    className="px-3 py-1 bg-white/10 text-white/70 text-xs font-medium rounded-full"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              {/* Links — always render at bottom */}
-              <div className="flex gap-3 mt-auto">
-                {project.links.github && (
-                  <a
-                    href={project.links.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 bg-white text-black text-xs font-bold rounded-full hover:bg-[#ff2a2a] hover:text-white transition-colors duration-200"
-                  >
-                    GitHub ↗
-                  </a>
-                )}
-                {project.links.demo ? (
-                  <a
-                    href={project.links.demo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 border border-white/20 text-white/70 text-xs font-medium rounded-full hover:border-white hover:text-white transition-colors duration-200"
-                  >
-                    Live Demo ↗
-                  </a>
-                ) : (
-                  <span className="px-4 py-2 border border-white/10 text-white/25 text-xs font-medium rounded-full cursor-default">
-                    Demo Coming Soon
-                  </span>
-                )}
-              </div>
-            </div>
+              project={project}
+              aosDelay={(index + 1) * 100}
+            />
           ))}
+        </div>
+
+        {/* Bottom CTA to explore all GitHub repos */}
+        <div data-aos="fade-up" className="flex justify-center">
+          <a
+            href={socialLinks.github || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-6 py-3 rounded-full bg-white/10 border border-white/20 text-white font-semibold hover:bg-white/20 transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] flex items-center gap-3 active:scale-95 text-sm"
+          >
+            <GitHubIcon className="w-4 h-4" />
+            <span>Explore All My Repositories</span>
+            <span className="text-[#ff2a2a] font-bold">→</span>
+          </a>
         </div>
       </div>
     </section>
