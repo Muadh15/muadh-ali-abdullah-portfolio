@@ -6,7 +6,7 @@ Built during the placement training program at [TAP Academy](https://thetapacade
 
 ## Live Site
 
-- **Live URL:** [https://YOUR-SITE-URL/](https://YOUR-SITE-URL/)
+- **Live URL:** [https://my-portfolio-nu-peach-95.vercel.app/](https://my-portfolio-nu-peach-95.vercel.app/)
 
 ## Tech Stack
 
