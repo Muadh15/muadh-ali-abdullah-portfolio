@@ -1,112 +1,124 @@
-// Sticky navigation bar — transparent at top, solid black when scrolled
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { personalInfo } from '../data/portfolioData'
 
-const NAV_LINKS = [
-  { label: 'Home',     href: '#home' },
-  { label: 'About',    href: '#about' },
-  { label: 'Skills',   href: '#skills' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Contact',  href: '#contact' },
-]
-
 function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
 
-  // Show solid background after scrolling 60px
+  // Track window scroll to trigger dynamic navbar padding
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const firstName = personalInfo.brandName.split(' ')[0]
+  const navLinks = ['Home', 'About', 'Skills', 'Projects', 'Contact']
+
+  const hireMeMailto = `mailto:${personalInfo.emails.primary}?subject=Hiring Inquiry – Portfolio&body=Hello ${personalInfo.name},%0D%0A%0D%0AI came across your portfolio and would like to discuss an opportunity with you.%0D%0A%0D%0ALooking forward to hearing from you.%0D%0ABest Regards,`
 
   return (
-    <motion.nav
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-black/90 backdrop-blur-md shadow-xl' : 'bg-transparent'
+    <nav
+      className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${
+        isOpen
+          ? 'bg-[#ff2a2a] py-4'
+          : isScrolled
+          ? 'bg-transparent py-4'
+          : 'bg-transparent py-6'
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-
-        {/* Brand / logo */}
-        <a href="#home" className="text-white font-black text-xl tracking-tight">
-          {firstName}<span className="text-[#ff2a2a]">.</span>
+      <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+        {/* Left: Brand logo */}
+        <a href="#" className="text-white text-2xl font-black tracking-tight">
+          {personalInfo.brandName}
+          <span className="text-[#ff2a2a]">.</span>
         </a>
 
-        {/* Desktop nav links */}
-        <ul className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.map(link => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className="text-white/70 hover:text-[#ff2a2a] text-sm font-medium tracking-wide transition-colors duration-200"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-          {/* Resume button */}
-          <li>
+        {/* Centre: Desktop navigation links with animated underline */}
+        <div className="hidden md:flex space-x-8">
+          {navLinks.map((link) => (
             <a
-              href={personalInfo.resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-1.5 border border-[#ff2a2a] text-[#ff2a2a] text-sm font-semibold rounded-full hover:bg-[#ff2a2a] hover:text-white transition-all duration-200"
+              key={link}
+              href={`#${link.toLowerCase()}`}
+              className="group relative text-white/80 hover:text-white font-medium transition-colors duration-200"
             >
-              Resume
+              {link}
+              <span className="absolute -bottom-1 left-0 h-0.5 bg-red-500 w-0 group-hover:w-full transition-all duration-300" />
             </a>
-          </li>
-        </ul>
+          ))}
+        </div>
 
-        {/* Mobile hamburger — three animated bars */}
+        {/* Right: Hire Me CTA button */}
+        <div className="hidden md:block">
+          <a
+            href={hireMeMailto}
+            className="px-6 py-2.5 rounded-full bg-white/10 border border-white/20 text-white font-semibold backdrop-blur-md hover:bg-white/20 transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+          >
+            Hire Me
+          </a>
+        </div>
+
+        {/* Mobile: Hamburger toggle */}
         <button
-          className="md:hidden flex flex-col gap-1.5 p-1 focus:outline-none"
-          onClick={() => setMenuOpen(prev => !prev)}
+          type="button"
+          onClick={() => setIsOpen((prev) => !prev)}
           aria-label="Toggle navigation menu"
+          className="md:hidden text-white focus:outline-none p-1"
         >
-          <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
-          <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            {isOpen ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            )}
+          </svg>
         </button>
       </div>
 
-      {/* Mobile dropdown */}
-      {menuOpen && (
-        <div className="md:hidden bg-black/95 border-t border-white/10">
-          <ul className="flex flex-col px-6 py-4 gap-4">
-            {NAV_LINKS.map(link => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="block text-white/80 hover:text-[#ff2a2a] text-sm font-medium py-1 transition-colors"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-            <li>
-              <a
-                href={personalInfo.resumeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-4 py-1.5 border border-[#ff2a2a] text-[#ff2a2a] text-sm font-semibold rounded-full"
-                onClick={() => setMenuOpen(false)}
-              >
-                Resume
-              </a>
-            </li>
-          </ul>
+      {/* Mobile dropdown panel */}
+      <div
+        className={`md:hidden absolute top-full left-0 w-full transition-all duration-300 overflow-hidden shadow-2xl bg-[#ff2a2a] ${
+          isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="px-6 py-4 flex flex-col">
+          {navLinks.map((link) => (
+            <a
+              key={link}
+              href={`#${link.toLowerCase()}`}
+              onClick={() => setIsOpen(false)}
+              className="text-white font-bold text-lg border-b border-white/20 py-3 block hover:text-black transition-colors"
+            >
+              {link}
+            </a>
+          ))}
+          <a
+            href={hireMeMailto}
+            onClick={() => setIsOpen(false)}
+            className="w-full py-3 mt-4 text-center block rounded-full bg-white text-[#ff2a2a] font-bold shadow-md hover:bg-gray-100 transition-colors"
+          >
+            Hire Me
+          </a>
         </div>
-      )}
-    </motion.nav>
+      </div>
+    </nav>
   )
 }
 
