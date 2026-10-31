@@ -25,42 +25,40 @@ function About() {
         <path d="M12 0l2.5 8.5L23 12l-8.5 2.5L12 23l-2.5-8.5L1 12l8.5-2.5z" />
       </svg>
 
-      {/* Inner two-column wrapper */}
+      {/* Inner wrapper */}
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-16 items-start relative z-10">
-        {/* Left: Animated ID badge on a lanyard */}
-        <div className="md:w-[350px] shrink-0 relative flex justify-center w-full">
-          <motion.div
-            initial={{ y: -300, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{
-              type: 'spring',
-              stiffness: 110,
-              damping: 9,
-              mass: 1.1,
-            }}
-            className="relative"
-          >
-            {/* Lanyard string */}
-            <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-3 h-40 bg-black pointer-events-none" />
+        {/* Left: ID badge on a lanyard */}
+        <motion.div
+          initial={{ y: -300, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{
+            type: 'spring',
+            stiffness: 110,
+            damping: 9,
+            mass: 1.1,
+          }}
+          className="md:w-[350px] shrink-0 relative flex justify-center w-full"
+        >
+          {/* Black lanyard string */}
+          <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-3 h-40 bg-black pointer-events-none" />
 
-            {/* Grey clip rectangle */}
-            <div className="w-8 h-4 bg-gray-400 rounded-sm mx-auto -mb-1 relative z-10 shadow-sm border border-gray-500" />
+          {/* Grey clip rectangle */}
+          <div className="w-8 h-4 bg-gray-400 rounded-sm mx-auto -mb-1 relative z-10 shadow-sm border border-gray-500" />
 
-            {/* Dark ID Card */}
-            <div className="bg-gray-900 max-w-[280px] rounded-2xl p-3 shadow-2xl -rotate-3 hover:rotate-0 transition-transform duration-500 relative">
-              {/* Cutout slot at the top */}
-              <div className="w-12 h-1.5 bg-black/80 rounded-full mx-auto mb-2.5" />
+          {/* Dark card */}
+          <div className="bg-gray-900 max-w-[280px] w-full rounded-2xl p-3 shadow-2xl -rotate-3 hover:rotate-0 transition-transform duration-500 relative">
+            {/* Cutout slot at the top */}
+            <div className="w-12 h-1.5 bg-black/80 rounded-full mx-auto mb-2.5" />
 
-              {/* Photo inside */}
-              <img
-                src={stackImage}
-                alt="Muadh Ali Abdullah"
-                className="aspect-[3/4] w-full rounded-xl object-cover object-top shadow-inner"
-              />
-            </div>
-          </motion.div>
-        </div>
+            {/* Photo inside */}
+            <img
+              src={stackImage}
+              alt="Muadh Ali Abdullah"
+              className="aspect-[3/4] w-full rounded-xl object-cover object-top shadow-inner"
+            />
+          </div>
+        </motion.div>
 
         {/* Right: Bio heading and rich text */}
         <div data-aos="fade-left" className="flex-1">
