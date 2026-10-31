@@ -6,7 +6,7 @@ function Internships() {
   if (!internshipsList || internshipsList.length === 0) return null
 
   return (
-    <section className="py-24 bg-white text-black">
+    <section id="experience" className="py-24 bg-white text-black">
       <div className="max-w-6xl mx-auto px-6">
 
         {/* Section label + heading */}
@@ -15,12 +15,12 @@ function Internships() {
             Experience
           </p>
           <h2 className="text-4xl md:text-5xl font-black text-black">
-            Internship
+            Internships & Experience
           </h2>
         </div>
 
         {/* Internship cards */}
-        <div className="flex flex-col gap-6 max-w-3xl mx-auto">
+        <div className="flex flex-col gap-8 max-w-3xl mx-auto">
           {internshipsList.map((item, i) => (
             <div
               key={`${item.organization}-${i}`}
@@ -29,7 +29,7 @@ function Internships() {
               className="group border-2 border-black rounded-2xl p-8 hover:bg-black transition-all duration-300"
             >
               {/* Role + duration row */}
-              <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
+              <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
                 <div>
                   <h3 className="text-2xl font-black text-black group-hover:text-white transition-colors duration-300">
                     {item.role}
@@ -43,39 +43,55 @@ function Internships() {
                 </span>
               </div>
 
-              {/* Skills gained */}
-              <div className="mb-4">
-                <p className="text-xs font-bold tracking-widest uppercase text-gray-400 group-hover:text-white/40 mb-2 transition-colors duration-300">
-                  Skills Gained
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {item.skills.map(s => (
-                    <span
-                      key={s}
-                      className="px-3 py-1 bg-gray-100 group-hover:bg-white/10 text-gray-700 group-hover:text-white/70 text-xs font-medium rounded-full transition-colors duration-300"
-                    >
-                      {s}
-                    </span>
+              {/* Bullet highlights */}
+              {item.highlights && item.highlights.length > 0 && (
+                <ul className="mb-6 space-y-2 text-sm text-gray-600 group-hover:text-white/75 transition-colors duration-300">
+                  {item.highlights.map((highlight, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5">
+                      <span className="text-[#ff2a2a] text-base leading-tight font-bold select-none">•</span>
+                      <span className="leading-relaxed">{highlight}</span>
+                    </li>
                   ))}
+                </ul>
+              )}
+
+              {/* Skills gained */}
+              {item.skills && item.skills.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-xs font-bold tracking-widest uppercase text-gray-400 group-hover:text-white/40 mb-2 transition-colors duration-300">
+                    Key Areas
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {item.skills.map(s => (
+                      <span
+                        key={s}
+                        className="px-3 py-1 bg-gray-100 group-hover:bg-white/10 text-gray-700 group-hover:text-white/70 text-xs font-medium rounded-full transition-colors duration-300"
+                      >
+                        {s}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Technologies used */}
-              <div>
-                <p className="text-xs font-bold tracking-widest uppercase text-gray-400 group-hover:text-white/40 mb-2 transition-colors duration-300">
-                  Tech Used
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {item.tech.map(t => (
-                    <span
-                      key={t}
-                      className="px-3 py-1 bg-black group-hover:bg-white text-white group-hover:text-black text-xs font-semibold rounded-full transition-colors duration-300"
-                    >
-                      {t}
-                    </span>
-                  ))}
+              {item.tech && item.tech.length > 0 && (
+                <div>
+                  <p className="text-xs font-bold tracking-widest uppercase text-gray-400 group-hover:text-white/40 mb-2 transition-colors duration-300">
+                    Tech Stack
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {item.tech.map(t => (
+                      <span
+                        key={t}
+                        className="px-3 py-1 bg-black group-hover:bg-white text-white group-hover:text-black text-xs font-semibold rounded-full transition-colors duration-300"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ))}
         </div>

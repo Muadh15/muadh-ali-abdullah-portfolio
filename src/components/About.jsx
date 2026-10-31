@@ -76,8 +76,8 @@ function About() {
                 <p className="text-xs text-gray-500 mt-1 font-medium">Projects Built</p>
               </div>
               <div className="p-4 bg-gray-50 rounded-2xl text-center">
-                <p className="text-3xl font-black text-[#ff2a2a]">6mo</p>
-                <p className="text-xs text-gray-500 mt-1 font-medium">Internship</p>
+                <p className="text-3xl font-black text-[#ff2a2a]">2</p>
+                <p className="text-xs text-gray-500 mt-1 font-medium">Internships</p>
               </div>
             </div>
           </div>

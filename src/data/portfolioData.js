@@ -133,9 +133,30 @@ export const leadershipList = [];
 // ─── Internships / Experience ─────────────────────────────────
 export const internshipsList = [
   {
+    organization: "TAP Academy",
+    role: "Data Analyst Intern",
+    duration: "06/2026 – Present",
+    highlights: [
+      "Undergoing structured, hands-on training in SQL, Python, Excel, and Power BI as part of a data analyst internship program.",
+      "Completing guided assignments and case studies covering data cleaning, validation, quality checks, and querying of real-world datasets.",
+      "Applying structured, detail-oriented problem-solving to practical datasets under mentorship, translating requirements into working queries and dashboards.",
+    ],
+    skills: [
+      "Data Cleaning & Validation",
+      "Quality Checks & Querying",
+      "Business Dashboards & Reporting",
+      "Problem Solving",
+    ],
+    tech: ["SQL", "Python", "MS Excel", "Power BI"],
+  },
+  {
     organization: "Dhee Coding Lab",
     role: "MERN Full Stack Intern",
     duration: "Jan 2025 – Jun 2025",
+    highlights: [
+      "Completed a 6-month structured internship learning the MERN stack (MongoDB, Express, React, Node.js).",
+      "Built web pages and UI components using HTML, CSS, JavaScript, and React in a learning-focused environment.",
+    ],
     skills: [
       "MERN Stack Development",
       "Web Development",
