@@ -66,7 +66,8 @@ function Contact() {
 
     try {
       const emailjs = await import('@emailjs/browser')
-      await emailjs.sendForm(serviceId, templateId, form, publicKey)
+      // v5 API: 4th arg is an Options object, not a raw string
+      await emailjs.sendForm(serviceId, templateId, form, { publicKey })
       setStatus('success')
       form.reset()
     } catch (err) {
