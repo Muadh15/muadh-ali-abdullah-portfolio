@@ -1,15 +1,11 @@
-import { useRef, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
-import heroVideo from '../assets/hero/hero.mp4'
 import heroPoster from '../assets/about/profile.png'
 import { heroContent, socialLinks } from '../data/portfolioData'
 
 function Hero() {
-  const videoRef = useRef(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-
   // Initialize AOS once and attach a window load listener to refresh after heavy assets load
   useEffect(() => {
     AOS.init({
@@ -25,20 +21,6 @@ function Hero() {
     window.addEventListener('load', handleLoad)
     return () => window.removeEventListener('load', handleLoad)
   }, [])
-
-  // Toggle video playback with stopPropagation
-  const toggleVideo = (e) => {
-    e.stopPropagation()
-    if (!videoRef.current) return
-
-    if (videoRef.current.paused) {
-      videoRef.current.play()
-      setIsPlaying(true)
-    } else {
-      videoRef.current.pause()
-      setIsPlaying(false)
-    }
-  }
 
   // Common SVG social icon links
   const renderSocialIcons = (className = 'w-5 h-5') => (
@@ -87,18 +69,12 @@ function Hero() {
       id="home"
       className="relative w-full h-screen overflow-hidden bg-[#ff2a2a]"
     >
-      {/* Background Video: object-contain with right alignment on desktop, top on mobile */}
-      <video
-        ref={videoRef}
-        playsInline
-        poster={heroPoster}
-        onEnded={() => setIsPlaying(false)}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
+      {/* Hero portrait */}
+      <img
+        src={heroPoster}
+        alt="Muadh Ali Abdullah — Data Analyst, TAP Academy student"
         className="absolute inset-0 w-full h-full object-contain object-top md:object-right z-0"
-      >
-        <source src={heroVideo} type="video/mp4" />
-      </video>
+      />
 
       {/* Readability gradient overlay */}
       <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-r from-black/45 via-black/10 to-transparent" />
@@ -187,43 +163,6 @@ function Hero() {
               </a>
             )}
           </div>
-        </div>
-
-        {/* Right block: Play Reel control */}
-        <div
-          data-aos="zoom-in"
-          data-aos-delay="600"
-          className="mt-8 md:mt-0"
-        >
-          <button
-            type="button"
-            onClick={toggleVideo}
-            aria-label={isPlaying ? 'Pause video' : 'Play video'}
-            className="cursor-pointer flex flex-col items-center gap-2 group focus:outline-none"
-          >
-            <div className="w-12 h-12 md:w-20 md:h-20 rounded-full border border-white/30 bg-black/20 backdrop-blur flex items-center justify-center hover:scale-110 hover:bg-[#ff2a2a] transition-all duration-300 shadow-[0_0_20px_rgba(255,42,42,0.4)]">
-              {isPlaying ? (
-                /* Pause icon */
-                <svg
-                  className="w-5 h-5 md:w-8 md:h-8 text-white fill-current"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                </svg>
-              ) : (
-                /* Play triangle */
-                <svg
-                  className="w-5 h-5 md:w-8 md:h-8 text-white fill-current translate-x-0.5"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              )}
-            </div>
-            <span className="text-white text-[10px] md:text-xs uppercase tracking-widest font-mono font-medium group-hover:text-white">
-              {isPlaying ? 'Pause' : 'Play Reel'}
-            </span>
-          </button>
         </div>
       </div>
 
